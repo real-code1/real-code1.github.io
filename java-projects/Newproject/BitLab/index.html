@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitLab - Binary Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div>
+            <h1>BitLab</h1>
+            <p>Explore how computers store information</p>
+        </div>
+        <nav class="tab-list" role="tablist" aria-label="BitLab tools">
+            <button class="tab-button active" id="binary-tab" type="button" role="tab"
+                    aria-controls="binary" aria-selected="true" tabindex="0"
+                    onclick="showTab('binary', this)">
+                Binary &amp; ASCII
+            </button>
+            <button class="tab-button" id="numbers-tab" type="button" role="tab"
+                    aria-controls="numbers" aria-selected="false" tabindex="-1"
+                    onclick="showTab('numbers', this)">
+                Number Storage
+            </button>
+            <button class="tab-button" id="images-tab" type="button" role="tab"
+                    aria-controls="images" aria-selected="false" tabindex="-1"
+                    onclick="showTab('images', this)">
+                Image Storage
+            </button>
+            <button class="tab-button" id="game-tab" type="button" role="tab"
+                    aria-controls="game" aria-selected="false" tabindex="-1"
+                    onclick="showTab('game', this)">
+                Game
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="panel tab-page active" id="binary" role="tabpanel"
+                 aria-labelledby="binary-tab">
+            <h2>Binary and ASCII Converter</h2>
+            <p>Click the bits to change their values.</p>
+
+            <div class="binary-layout">
+                <div id="bits" class="bits" aria-label="Binary switches"></div>
+
+                <div class="results">
+                    <div class="result">
+                        <span>Binary</span>
+                        <h2 id="binaryValue">01000001</h2>
+                    </div>
+                    <div class="result">
+                        <span>Decimal Value</span>
+                        <h2 id="decimalValue">65</h2>
+                    </div>
+                    <div class="result">
+                        <span>Hexadecimal</span>
+                        <h2 id="hexValue">0x41</h2>
+                    </div>
+                    <div class="result">
+                        <span>ASCII Character</span>
+                        <h2 id="asciiValue">A</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel tab-page" id="numbers" role="tabpanel"
+                 aria-labelledby="numbers-tab" hidden>
+            <h2>Number Storage</h2>
+            <p>Enter a whole number from 0 to 255.</p>
+
+            <div class="input-row">
+                <input id="numberInput" type="number" min="0" max="255" step="1" value="42" aria-label="Number from 0 to 255">
+                <button type="button" onclick="convertNumber()">Convert</button>
+            </div>
+
+            <div class="result-grid">
+                <div class="result">
+                    <span>Binary</span>
+                    <h2 id="numberBinary">00101010</h2>
+                </div>
+                <div class="result">
+                    <span>Hexadecimal</span>
+                    <h2 id="numberHex">0x2A</h2>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel tab-page" id="images" role="tabpanel"
+                 aria-labelledby="images-tab" hidden>
+            <h2>Image Storage</h2>
+            <p>Click the squares to draw a pixel picture.</p>
+
+            <div id="pixelGrid" class="pixel-grid" aria-label="8 by 8 pixel drawing grid"></div>
+
+            <div class="input-row">
+                <button type="button" onclick="clearPixels()">Clear Image</button>
+            </div>
+
+            <h3>Image Binary Data</h3>
+            <pre id="pixelData" aria-live="polite"></pre>
+        </section>
+
+        <section class="panel tab-page" id="game" role="tabpanel"
+                 aria-labelledby="game-tab" hidden>
+            <h2>🎮 BitLab Challenge</h2>
+            <h3>Choose a challenge</h3>
+            <div class="challenge-options" role="group" aria-label="Choose challenge type">
+                <button class="challenge-option active" type="button" aria-pressed="true"
+                        onclick="startChallenge('number', this)">Binary &amp; Decimal</button>
+                <button class="challenge-option" type="button" aria-pressed="false"
+                        onclick="startChallenge('ascii', this)">ASCII</button>
+                <button class="challenge-option" type="button" aria-pressed="false"
+                        onclick="startChallenge('imageDraw', this)">Draw Image</button>
+                <button class="challenge-option" type="button" aria-pressed="false"
+                        onclick="startChallenge('imageBinary', this)">Image to Binary</button>
+            </div>
+            <p><strong id="challengeTypeLabel"></strong></p>
+            <p id="gameInstructions" aria-live="polite"></p>
+
+            <div class="result" id="gameTargetArea">
+                <span id="targetLabel">Target Number</span>
+                <h2 id="targetNumber">65</h2>
+            </div>
+
+            <div id="gameBitArea">
+                <h3>Your Bits</h3>
+                <div id="gameBits" class="bits game-bits" aria-label="Game binary switches"></div>
+            </div>
+
+            <div id="gameAnswerArea" hidden>
+                <label for="gameAnswer">Your decimal answer</label>
+                <input id="gameAnswer" type="number" min="0" max="255" step="1">
+            </div>
+
+            <div id="gameChoices" class="game-choices" hidden></div>
+
+            <div id="gameImageArea" hidden>
+                <div class="game-image-layout">
+                    <div>
+                        <h3>Target Image</h3>
+                        <div id="targetPixelGrid" class="pixel-grid game-pixel-grid" aria-label="Target pixel image"></div>
+                    </div>
+                    <div id="gameDrawingArea">
+                        <h3>Your Image</h3>
+                        <div id="gamePixelGrid" class="pixel-grid game-pixel-grid" aria-label="Your pixel drawing"></div>
+                    </div>
+                </div>
+                <div id="imageBinaryAnswer" hidden>
+                    <h3>Enter the binary data for each row</h3>
+                    <div id="imageBinaryInputs" class="image-binary-inputs"></div>
+                </div>
+            </div>
+
+            <p id="gameMessage" aria-live="polite">Turn on the correct bits!</p>
+            <p id="gameHint" aria-live="polite"></p>
+
+            <button type="button" onclick="checkAnswer()">Check Answer</button>
+            <button type="button" onclick="getHint()">Get Hint</button>
+            <button type="button" onclick="newChallenge()">New Question</button>
+
+            <p>Score: <strong id="score">0</strong></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>BitLab — Learn how computers represent data with bits.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
