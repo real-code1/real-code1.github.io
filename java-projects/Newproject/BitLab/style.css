@@ -121,7 +121,7 @@ main {
 
 .image-binary-inputs {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
     max-width: 400px;
     margin-bottom: 16px;
@@ -131,6 +131,12 @@ main {
     width: 100%;
     font-family: monospace;
     letter-spacing: 2px;
+}
+
+.image-countdown {
+    color: #20d9f2;
+    font-size: 1.5rem;
+    font-weight: bold;
 }
 
 .bit {
@@ -269,6 +275,7 @@ button:hover {
 
 .game-pixel-grid {
     width: min(100%, 280px);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .game-target-pixel {
@@ -277,6 +284,10 @@ button:hover {
     background: #06152d;
     border: 1px solid #315987;
     border-radius: 3px;
+}
+
+.game-target-pixel.on {
+    background: #20d9f2;
 }
 
 .pixel {

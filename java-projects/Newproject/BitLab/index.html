@@ -113,9 +113,9 @@
                 <button class="challenge-option" type="button" aria-pressed="false"
                         onclick="startChallenge('ascii', this)">ASCII</button>
                 <button class="challenge-option" type="button" aria-pressed="false"
-                        onclick="startChallenge('imageDraw', this)">Draw Image</button>
+                        onclick="startChallenge('binaryToImage', this)">Binary to Image</button>
                 <button class="challenge-option" type="button" aria-pressed="false"
-                        onclick="startChallenge('imageBinary', this)">Image to Binary</button>
+                        onclick="startChallenge('imageToBinary', this)">Image to Binary</button>
             </div>
             <p><strong id="challengeTypeLabel"></strong></p>
             <p id="gameInstructions" aria-live="polite"></p>
@@ -138,18 +138,24 @@
             <div id="gameChoices" class="game-choices" hidden></div>
 
             <div id="gameImageArea" hidden>
+                <p id="imageCountdown" class="image-countdown" aria-live="assertive" hidden></p>
+                <button id="imagePlayButton" type="button" onclick="startImageChallenge()">Play</button>
                 <div class="game-image-layout">
-                    <div>
-                        <h3>Target Image</h3>
-                        <div id="targetPixelGrid" class="pixel-grid game-pixel-grid" aria-label="Target pixel image"></div>
+                    <div id="targetPictureArea">
+                        <h3>Memorize the image</h3>
+                        <div id="targetPixelGrid" class="pixel-grid game-pixel-grid" aria-label="4 by 4 target pixel image"></div>
                     </div>
                     <div id="gameDrawingArea">
                         <h3>Your Image</h3>
-                        <div id="gamePixelGrid" class="pixel-grid game-pixel-grid" aria-label="Your pixel drawing"></div>
+                        <div id="gamePixelGrid" class="pixel-grid game-pixel-grid" aria-label="Your 4 by 4 pixel drawing"></div>
+                    </div>
+                    <div id="targetBinaryArea" hidden>
+                        <h3>Memorize the binary</h3>
+                        <pre id="targetImageBinary"></pre>
                     </div>
                 </div>
                 <div id="imageBinaryAnswer" hidden>
-                    <h3>Enter the binary data for each row</h3>
+                    <h3>Enter the 4-bit binary data for each row</h3>
                     <div id="imageBinaryInputs" class="image-binary-inputs"></div>
                 </div>
             </div>
@@ -159,7 +165,6 @@
 
             <button type="button" onclick="checkAnswer()">Check Answer</button>
             <button type="button" onclick="getHint()">Get Hint</button>
-            <button type="button" onclick="newChallenge()">New Question</button>
 
             <p>Score: <strong id="score">0</strong></p>
         </section>

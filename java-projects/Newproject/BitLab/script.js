@@ -1,30 +1,20 @@
 const values = [128, 64, 32, 16, 8, 4, 2, 1];
+const imageSize = 4;
+const imagePixelCount = imageSize * imageSize;
 
 let bits = [0, 1, 0, 0, 0, 0, 0, 1];
 let score = 0;
 let target = 65;
 let hintIndex = 0;
 let pixels = Array(64).fill(0);
-let gamePixels = Array(64).fill(0);
+let gamePixels = Array(imagePixelCount).fill(0);
 let targetImage = [];
 let challengeType = "number";
 let challengeMode = "decimalToBits";
 let selectedChoice = "";
-
-const imageChallenges = [
-    [
-        "00111100", "01000010", "10100101", "10000001",
-        "10100101", "10011001", "01000010", "00111100"
-    ],
-    [
-        "00000000", "01100110", "11111111", "11111111",
-        "01111110", "00111100", "00011000", "00000000"
-    ],
-    [
-        "10000001", "01000010", "00100100", "00011000",
-        "00011000", "00100100", "01000010", "10000001"
-    ]
-];
+let imageRevealInterval = null;
+let imageChallengeStarted = false;
+let nextChallengeTimeout = null;
 
 function showTab(tabName, clickedButton) {
     document.querySelectorAll(".tab-page").forEach(function (page) {
@@ -198,7 +188,7 @@ function createGamePixels() {
     targetGrid.innerHTML = "";
     answerGrid.innerHTML = "";
 
-    for (let i = 0; i < 64; i++) {
+    for (let i = 0; i < imagePixelCount; i++) {
         const targetPixel = document.createElement("span");
         targetPixel.className = "game-target-pixel";
         if (targetImage[i] === 1) {
@@ -224,11 +214,21 @@ function createGamePixels() {
 }
 
 function newChallenge() {
+    if (nextChallengeTimeout !== null) {
+        clearTimeout(nextChallengeTimeout);
+        nextChallengeTimeout = null;
+    }
+    if (imageRevealInterval !== null) {
+        clearInterval(imageRevealInterval);
+        imageRevealInterval = null;
+    }
+    imageChallengeStarted = false;
+
     if (challengeType === "number" || challengeType === "ascii") {
         challengeMode = Math.random() < 0.5 ? "decimalToBits" : "binaryToDecimal";
-    } else if (challengeType === "imageDraw") {
-        challengeMode = "imageDraw";
-    } else {
+    } else if (challengeType === "binaryToImage") {
+        challengeMode = "binaryToImage";
+    } else if (challengeType === "imageToBinary") {
         challengeMode = "imageToBinary";
     }
     hintIndex = 0;
@@ -240,8 +240,8 @@ function newChallenge() {
     const imageArea = document.getElementById("gameImageArea");
     const targetLabel = document.getElementById("targetLabel");
     const binaryInput = document.getElementById("gameAnswer");
-    const isImageChallenge =
-        challengeType === "imageDraw" || challengeType === "imageBinary";
+    const isImageChallenge = challengeType === "binaryToImage" ||
+        challengeType === "imageToBinary";
     const isAsciiChoice = challengeType === "ascii" &&
         challengeMode === "binaryToDecimal";
     const isBinaryAnswer = challengeMode === "binaryToDecimal" &&
@@ -250,7 +250,8 @@ function newChallenge() {
     document.getElementById("challengeTypeLabel").textContent =
         challengeType === "number" ? "Binary & Decimal Challenge" :
             challengeType === "ascii" ? "ASCII Challenge" :
-                challengeType === "imageDraw" ? "Draw Image Challenge" :
+                challengeType === "binaryToImage" ?
+                    "Binary to Image Challenge" :
                     "Image to Binary Challenge";
 
     targetArea.hidden = isImageChallenge;
@@ -259,9 +260,13 @@ function newChallenge() {
     choicesArea.hidden = !isAsciiChoice;
     imageArea.hidden = !isImageChallenge;
     document.getElementById("gameDrawingArea").hidden =
-        challengeType !== "imageDraw";
-    document.getElementById("imageBinaryAnswer").hidden =
-        challengeType !== "imageBinary";
+        challengeMode !== "binaryToImage";
+    document.getElementById("targetPictureArea").hidden = true;
+    document.getElementById("targetBinaryArea").hidden =
+        true;
+    document.getElementById("imageBinaryAnswer").hidden = true;
+    document.getElementById("imageCountdown").hidden = true;
+    document.getElementById("imagePlayButton").hidden = !isImageChallenge;
     binaryInput.value = "";
     choicesArea.innerHTML = "";
     selectedChoice = "";
@@ -294,18 +299,24 @@ function newChallenge() {
             "Choose the character that matches this ASCII code.";
         createAsciiChoices(choicesArea);
     } else {
-        const image = imageChallenges[
-            Math.floor(Math.random() * imageChallenges.length)
-        ];
+        const image = Array.from({ length: imageSize }, function () {
+            return Array.from({ length: imageSize }, function () {
+                return Math.random() < 0.5 ? "0" : "1";
+            }).join("");
+        });
         targetImage = image.join("").split("").map(Number);
-        gamePixels = Array(64).fill(0);
+        gamePixels = Array(imagePixelCount).fill(0);
         createGamePixels();
-        if (challengeType === "imageDraw") {
+        document.getElementById("gameDrawingArea").hidden = true;
+        document.getElementById("targetPictureArea").hidden = true;
+        if (challengeMode === "binaryToImage") {
+            const binaryData = image.join("\n");
+            document.getElementById("targetImageBinary").textContent = binaryData;
             document.getElementById("gameInstructions").textContent =
-                "Recreate the target image by turning on the matching pixels.";
+                "Press Play and memorize the random 4-by-4 binary pattern. Then recreate it with the pixels.";
         } else {
             document.getElementById("gameInstructions").textContent =
-                "Enter the 8-bit binary data for each row of the target image.";
+                "Press Play and memorize the random 4-by-4 image. Then enter its binary rows.";
             createImageBinaryInputs();
         }
     }
@@ -316,6 +327,50 @@ function newChallenge() {
     bits = Array(8).fill(0);
     createBits();
     updateBinary();
+}
+
+function startImageChallenge() {
+    if (!isImageChallenge()) {
+        return;
+    }
+    if (imageChallengeStarted || imageRevealInterval !== null) {
+        return;
+    }
+
+    imageChallengeStarted = true;
+    let secondsLeft = 5;
+    const playButton = document.getElementById("imagePlayButton");
+    const countdown = document.getElementById("imageCountdown");
+    const targetPicture = document.getElementById("targetPictureArea");
+    const targetBinary = document.getElementById("targetBinaryArea");
+    const drawingArea = document.getElementById("gameDrawingArea");
+    const binaryAnswer = document.getElementById("imageBinaryAnswer");
+
+    playButton.hidden = true;
+    countdown.hidden = false;
+    countdown.textContent = "Memorize the pattern: " + secondsLeft;
+    targetPicture.hidden = challengeMode !== "imageToBinary";
+    targetBinary.hidden = challengeMode !== "binaryToImage";
+
+    imageRevealInterval = setInterval(function () {
+        secondsLeft--;
+        if (secondsLeft > 0) {
+            countdown.textContent = "Memorize the pattern: " + secondsLeft;
+            return;
+        }
+
+        clearInterval(imageRevealInterval);
+        imageRevealInterval = null;
+        targetPicture.hidden = true;
+        targetBinary.hidden = true;
+        drawingArea.hidden = challengeMode !== "binaryToImage";
+        binaryAnswer.hidden = challengeMode !== "imageToBinary";
+        countdown.hidden = true;
+        document.getElementById("gameInstructions").textContent =
+            challengeMode === "imageToBinary"
+                ? "Enter the four 4-bit rows you memorized."
+                : "Recreate the binary pattern by lighting the matching pixels.";
+    }, 1000);
 }
 
 function startChallenge(type, button) {
@@ -358,23 +413,25 @@ function createImageBinaryInputs() {
     const container = document.getElementById("imageBinaryInputs");
     container.innerHTML = "";
 
-    for (let row = 0; row < 8; row++) {
+    for (let row = 0; row < imageSize; row++) {
         const input = document.createElement("input");
         input.type = "text";
         input.className = "image-binary-input";
-        input.maxLength = 8;
-        input.pattern = "[01]{8}";
+        input.maxLength = imageSize;
+        input.pattern = "[01]{" + imageSize + "}";
         input.inputMode = "numeric";
-        input.setAttribute("aria-label", "Binary data for image row " + (row + 1));
+        input.value = "0".repeat(imageSize);
+        input.setAttribute("aria-label", "4-bit binary data for image row " + (row + 1));
         container.appendChild(input);
     }
 }
 
 function getHint() {
-    if (challengeType === "imageDraw" || challengeType === "imageBinary") {
+    if (challengeType === "binaryToImage" ||
+        challengeType === "imageToBinary") {
         const litPixels = targetImage.filter(pixel => pixel === 1).length;
         document.getElementById("gameHint").textContent =
-            "Hint: The target image has " + litPixels + " lit pixels.";
+            "Hint: This image has " + litPixels + " lit pixels.";
         return;
     }
 
@@ -399,8 +456,24 @@ function getHint() {
     hintIndex++;
 }
 
+function isImageChallenge() {
+    return challengeType === "binaryToImage" ||
+        challengeType === "imageToBinary";
+}
+
 function checkAnswer() {
     let isCorrect;
+
+    if (nextChallengeTimeout !== null) {
+        return;
+    }
+
+    if (isImageChallenge() &&
+        (!imageChallengeStarted || imageRevealInterval !== null)) {
+        document.getElementById("gameMessage").textContent =
+            "Press Play and finish the five-second countdown before answering.";
+        return;
+    }
 
     if (challengeMode === "binaryToDecimal" &&
         (challengeType === "number" || challengeType === "ascii")) {
@@ -421,13 +494,19 @@ function checkAnswer() {
             }
             isCorrect = answer === target;
         }
-    } else if (challengeType === "imageDraw") {
+    } else if (challengeType === "binaryToImage" &&
+        challengeMode === "binaryToImage") {
         isCorrect = gamePixels.every((pixel, index) => pixel === targetImage[index]);
-    } else if (challengeType === "imageBinary") {
+    } else if (challengeType === "imageToBinary" &&
+        challengeMode === "imageToBinary") {
         const inputs = document.querySelectorAll(".image-binary-input");
         isCorrect = Array.from(inputs).every(function (input, index) {
-            const expectedRow = targetImage.slice(index * 8, index * 8 + 8).join("");
-            return /^[01]{8}$/.test(input.value) && input.value === expectedRow;
+            const expectedRow = targetImage.slice(
+                index * imageSize,
+                index * imageSize + imageSize
+            ).join("");
+            const rowPattern = new RegExp("^[01]{" + imageSize + "}$");
+            return rowPattern.test(input.value) && input.value === expectedRow;
         });
     } else {
         isCorrect = getNumber() === target;
@@ -438,11 +517,16 @@ function checkAnswer() {
 
         document.getElementById("score").textContent = score;
         document.getElementById("gameMessage").textContent =
-            "Correct! You earned 10 points!";
+            "Correct! You earned 10 points. Next question coming up...";
     } else {
         document.getElementById("gameMessage").textContent =
-            "Not quite! Keep trying.";
+            "Not quite! Next question coming up...";
     }
+
+    nextChallengeTimeout = setTimeout(function () {
+        nextChallengeTimeout = null;
+        newChallenge();
+    }, 1500);
 }
 
 createBits();
