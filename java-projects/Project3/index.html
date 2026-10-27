@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore online privacy, COPPA, and responsible technology choices with Privacy Quest.">
+  <title>Privacy Quest: Safety, Law &amp; Ethics</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --navy: #10152b;
+      --navy-light: #191f3b;
+      --card: #1d2443;
+      --purple: #8d68ff;
+      --cyan: #62e5ee;
+      --text: #f5f6ff;
+      --muted: #c1c7df;
+      --line: rgba(209, 216, 255, 0.16);
+      --success: #8af0b4;
+      --warning: #ffd58a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 5rem;
+    }
+
+    body {
+      margin: 0;
+      background: var(--navy);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: var(--cyan);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible + label {
+      outline: 3px solid var(--cyan);
+      outline-offset: 4px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      z-index: 20;
+      padding: 0.7rem 1rem;
+      border-radius: 0.6rem;
+      background: white;
+      color: var(--navy);
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid var(--line);
+      background: rgba(16, 21, 43, 0.96);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-wrap {
+      width: min(1120px, calc(100% - 2rem));
+      min-height: 4.5rem;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      color: var(--text);
+      font-weight: 800;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .brand span {
+      color: var(--cyan);
+    }
+
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 0.25rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    nav a {
+      display: block;
+      padding: 0.5rem 0.65rem;
+      border-radius: 0.6rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-decoration: none;
+    }
+
+    nav a:hover {
+      background: var(--navy-light);
+      color: var(--cyan);
+    }
+
+    main {
+      width: min(1120px, calc(100% - 2rem));
+      margin: auto;
+    }
+
+    section {
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero {
+      min-height: 570px;
+      display: grid;
+      align-content: center;
+      padding: 5.5rem 0;
+      border: 0;
+      background:
+        radial-gradient(ellipse at 80% 20%, rgba(141, 104, 255, 0.24), transparent 38%),
+        radial-gradient(ellipse at 10% 70%, rgba(98, 229, 238, 0.11), transparent 36%);
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3 {
+      line-height: 1.15;
+    }
+
+    h1 {
+      max-width: 800px;
+      margin: 0.6rem 0 0;
+      font-size: clamp(2.8rem, 8vw, 5.8rem);
+      letter-spacing: -0.055em;
+    }
+
+    h1 span {
+      color: var(--cyan);
+    }
+
+    .subtitle {
+      margin: 0.5rem 0 1rem;
+      color: #c6b7ff;
+      font-size: clamp(1.35rem, 3vw, 2rem);
+      font-weight: 700;
+    }
+
+    .hero-copy {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    h2 {
+      margin: 0.5rem 0 1rem;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: -0.035em;
+    }
+
+    h3 {
+      margin-top: 0;
+      font-size: 1.25rem;
+    }
+
+    p, li {
+      color: var(--muted);
+    }
+
+    .section-intro {
+      max-width: 760px;
+      margin-bottom: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      padding: 1.5rem;
+      border: 1px solid var(--line);
+      border-radius: 1.1rem;
+      background: linear-gradient(145deg, rgba(29, 36, 67, 0.96), rgba(25, 31, 59, 0.94));
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.12);
+    }
+
+    .card p:last-child,
+    .card ul:last-child {
+      margin-bottom: 0;
+    }
+
+    .wide {
+      grid-column: 1 / -1;
+    }
+
+    .icon {
+      display: inline-grid;
+      width: 2.7rem;
+      height: 2.7rem;
+      margin-bottom: 0.8rem;
+      place-items: center;
+      border-radius: 0.85rem;
+      background: rgba(98, 229, 238, 0.12);
+      color: var(--cyan);
+      font-size: 1.35rem;
+    }
+
+    .callout {
+      margin-top: 1rem;
+      padding: 1rem 1.2rem;
+      border-left: 3px solid var(--purple);
+      border-radius: 0 0.7rem 0.7rem 0;
+      background: rgba(141, 104, 255, 0.1);
+      color: var(--muted);
+    }
+
+    .scenario {
+      margin-top: 1.5rem;
+      padding: clamp(1.2rem, 4vw, 2rem);
+      border: 1px solid rgba(98, 229, 238, 0.35);
+      border-radius: 1.2rem;
+      background: linear-gradient(130deg, rgba(98, 229, 238, 0.08), rgba(141, 104, 255, 0.12));
+    }
+
+    .scenario h3 {
+      margin-bottom: 0.4rem;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.2rem;
+    }
+
+    button,
+    .button {
+      min-height: 2.85rem;
+      padding: 0.7rem 1rem;
+      border: 1px solid transparent;
+      border-radius: 0.75rem;
+      background: var(--purple);
+      color: white;
+      font: inherit;
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    button:hover,
+    .button:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    button.secondary {
+      border-color: var(--line);
+      background: var(--navy-light);
+      color: var(--text);
+    }
+
+    button.choice {
+      flex: 1 1 230px;
+      border-color: var(--line);
+      background: #222a4c;
+      text-align: left;
+    }
+
+    button.choice:hover {
+      border-color: var(--cyan);
+    }
+
+    .feedback {
+      min-height: 2rem;
+      margin: 1rem 0 0;
+      color: var(--success);
+      font-weight: 650;
+    }
+
+    .feedback.problem {
+      color: var(--warning);
+    }
+
+    .source-list {
+      display: grid;
+      gap: 0.85rem;
+      padding-left: 1.3rem;
+    }
+
+    .source-list li {
+      padding-left: 0.25rem;
+    }
+
+    .source-list a {
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .quiz-question {
+      margin: 0;
+      padding: 1.2rem 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .quiz-question legend {
+      margin-bottom: 0.7rem;
+      font-weight: 750;
+    }
+
+    .answer {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin: 0.45rem 0;
+      padding: 0.35rem 0.5rem;
+      border-radius: 0.5rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .answer:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .answer input {
+      margin-top: 0.35rem;
+      accent-color: var(--cyan);
+    }
+
+    .quiz-explanation {
+      margin: 0.7rem 0 0;
+      color: var(--success);
+    }
+
+    #quiz-result {
+      margin-top: 1rem;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    footer {
+      padding: 2rem 1rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .nav-wrap {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 0.8rem 0;
+      }
+
+      nav ul {
+        justify-content: flex-start;
+      }
+
+      nav a {
+        padding: 0.4rem 0.55rem;
+        font-size: 0.85rem;
+      }
+
+      section {
+        padding: 3.5rem 0;
+      }
+
+      .hero {
+        min-height: 500px;
+        padding: 4rem 0;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .wide {
+        grid-column: auto;
+      }
+
+      .button-row button {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#home">PRIVACY<span>QUEST</span></a>
+      <nav aria-label="Main navigation">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#laws">Computing Laws</a></li>
+          <li><a href="#ethics">Ethics</a></li>
+          <li><a href="#quiz">Quiz</a></li>
+          <li><a href="#sources">Sources</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero" id="home" aria-labelledby="home-title">
+      <p class="eyebrow">Advanced Computer Science II · Standards 5.3.4 &amp; 5.3.5</p>
+      <h1 id="home-title">Privacy <span>Quest</span></h1>
+      <p class="subtitle">Your Data. Your Choices.</p>
+      <p class="hero-copy">Technology helps us learn, connect, and find our way. But the same tools can raise privacy questions and ethical concerns. Explore how thoughtful choices, laws, and responsible design help protect people.</p>
+      <div class="button-row">
+        <a class="button" href="#privacy">Start the interactive activity</a>
+      </div>
+    </section>
+
+    <section id="privacy" aria-labelledby="privacy-title">
+      <p class="eyebrow">01 · Online privacy</p>
+      <h2 id="privacy-title">Know what you share</h2>
+      <p class="section-intro">Online privacy is about how information about you is collected, used, stored, and shared. Understanding the choices an app offers helps you make informed decisions—not just tap “allow” by habit.</p>
+      <div class="grid">
+        <article class="card">
+          <span class="icon" aria-hidden="true">◎</span>
+          <h3>What might apps collect?</h3>
+          <p>Depending on what an app does and its settings, it may request your name, email address, age, contacts, photos, device identifiers, search or usage activity, and location. Information can also be inferred from how and when you use a service.</p>
+        </article>
+        <article class="card">
+          <span class="icon" aria-hidden="true">⌖</span>
+          <h3>Location, in simple terms</h3>
+          <p>A phone can estimate where it is using signals such as GPS satellites, nearby Wi-Fi networks, and cell towers. An app with permission may use that estimate to show directions or nearby places. Background access can allow location updates even when the app is not open.</p>
+        </article>
+        <article class="card">
+          <span class="icon" aria-hidden="true">◇</span>
+          <h3>Why request permissions?</h3>
+          <p>Permissions can enable useful features: navigation needs location, a photo editor may need selected photos, and a messaging app might offer contact matching. Sometimes a request is broader than a feature requires, so check the reason and the app's privacy information.</p>
+        </article>
+        <article class="card">
+          <span class="icon" aria-hidden="true">✓</span>
+          <h3>Protect your privacy</h3>
+          <p>Review permissions and privacy settings regularly. Choose access only when needed, prefer “while using” or selected-item access when available, and remove permissions you no longer want. Ask a trusted adult for help if a setting or request is unclear.</p>
+        </article>
+      </div>
+
+      <div class="scenario" aria-labelledby="routebuddy-title">
+        <p class="eyebrow">Your turn</p>
+        <h3 id="routebuddy-title">RouteBuddy wants background location</h3>
+        <p>A fictional navigation app called RouteBuddy asks to access your location even when you are not using it. What is the most balanced next step?</p>
+        <div class="button-row" role="group" aria-label="Choose what to do about RouteBuddy">
+          <button class="choice" type="button" data-feedback="problem">A. Allow all permissions without checking.</button>
+          <button class="choice" type="button" data-feedback="best">B. Check why it needs the information and limit access to what is necessary.</button>
+          <button class="choice" type="button" data-feedback="problem">C. Delete every app that asks for permission.</button>
+        </div>
+        <p id="privacy-feedback" class="feedback" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="laws" aria-labelledby="laws-title">
+      <p class="eyebrow">02 · Computing laws</p>
+      <h2 id="laws-title">Laws shape software</h2>
+      <p class="section-intro">Software developers need to consider the rules that apply to the service, the information it handles, and the people it serves. Laws can create responsibilities for both how a product is designed and how it operates.</p>
+      <div class="grid">
+        <article class="card wide">
+          <span class="icon" aria-hidden="true">§</span>
+          <h3>COPPA · United States jurisdiction</h3>
+          <p>The Children's Online Privacy Protection Act (COPPA) is a United States federal law. COPPA and its implementing rule impose requirements on covered websites and online services that collect personal information from children under 13.</p>
+          <p>Certain covered services must give notice and obtain verifiable parental consent before collecting personal information from children, subject to applicable exceptions. COPPA does <strong>not</strong> apply identically to every website or every user; whether a service is covered depends on the law and facts about that service.</p>
+          <p>Developers need to understand applicable laws early so they can build appropriate notices, consent flows, data practices, and safeguards into software. Legal requirements can vary by jurisdiction and situation, so product teams may need qualified legal guidance.</p>
+          <div class="callout"><strong>Why it matters:</strong> understanding the rules before launch can help prevent harmful data practices and avoid noncompliance. This overview is educational, not legal advice.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="ethics" aria-labelledby="ethics-title">
+      <p class="eyebrow">03 · Technology ethics</p>
+      <h2 id="ethics-title">Build with people in mind</h2>
+      <p class="section-intro">Ethics helps developers think about what they should do—not only what they can do. Performance Standard 5.3.4 asks us to discuss the role of ethics in technologies, including how design choices affect people's rights, safety, and trust.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>Privacy &amp; informed consent</h3>
+          <p>Respect people's personal information. Informed consent means people can understand what they are agreeing to, why information is needed, and what choices they have.</p>
+        </article>
+        <article class="card">
+          <h3>Transparency</h3>
+          <p>Explain data practices clearly and honestly: what is collected, how it is used, and whether it is shared. Important details should not be hidden in confusing settings or language.</p>
+        </article>
+        <article class="card">
+          <h3>Fairness</h3>
+          <p>Consider who benefits and who could be harmed. Test for unequal impacts, avoid unnecessary barriers, and treat people respectfully across different circumstances.</p>
+        </article>
+        <article class="card">
+          <h3>Responsible data collection</h3>
+          <p>Collect only what is needed for a clear purpose, protect it, and avoid keeping it longer than necessary. More data can create more risk without adding real value.</p>
+        </article>
+      </div>
+      <div class="callout">Ethical responsibility can extend beyond minimum legal requirements. A practice might be technically allowed but still surprise, pressure, or disadvantage users. Responsible design considers trust and human impact, too.</div>
+
+      <div class="scenario" aria-labelledby="developer-title">
+        <p class="eyebrow">Ethics challenge</p>
+        <h3 id="developer-title">The advertising data request</h3>
+        <p>A developer wants to collect location data for advertising, even though the app only needs location while navigating. Compare the trade-offs in each choice.</p>
+        <div class="button-row" role="group" aria-label="Explore the developer's choices">
+          <button class="choice" type="button" data-feedback="collect">A. Collect as much data as possible.</button>
+          <button class="choice" type="button" data-feedback="minimize">B. Collect only what is necessary and explain its use clearly.</button>
+          <button class="choice" type="button" data-feedback="hide">C. Hide the details in confusing privacy settings.</button>
+        </div>
+        <p id="ethics-feedback" class="feedback" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="quiz" aria-labelledby="quiz-title">
+      <p class="eyebrow">04 · Check your understanding</p>
+      <h2 id="quiz-title">Privacy Quest quiz</h2>
+      <p class="section-intro">Choose one answer for each question, then check your score. You can try again whenever you like.</p>
+      <form id="quiz-form">
+        <fieldset class="quiz-question" data-answer="b" data-explanation="Location can be estimated from GPS, Wi-Fi, and cell-tower signals. Apps can use it when the relevant permission is granted.">
+          <legend>1. How can a phone estimate its location?</legend>
+          <label class="answer"><input type="radio" name="q1" value="a"> Only by reading the user's contacts</label>
+          <label class="answer"><input type="radio" name="q1" value="b"> Using signals such as GPS, Wi-Fi, and cell towers</label>
+          <label class="answer"><input type="radio" name="q1" value="c"> By knowing a person's location without any signals</label>
+          <label class="answer"><input type="radio" name="q1" value="d"> Only when the phone is turned off</label>
+          <p class="quiz-explanation" hidden></p>
+        </fieldset>
+        <fieldset class="quiz-question" data-answer="c" data-explanation="Reviewing and limiting permissions lets you make a more informed choice about which information an app can access.">
+          <legend>2. Which is a useful way to protect your online privacy?</legend>
+          <label class="answer"><input type="radio" name="q2" value="a"> Accept every permission automatically</label>
+          <label class="answer"><input type="radio" name="q2" value="b"> Share passwords with an app to verify your identity</label>
+          <label class="answer"><input type="radio" name="q2" value="c"> Review privacy settings and limit access to what is needed</label>
+          <label class="answer"><input type="radio" name="q2" value="d"> Assume all apps collect exactly the same data</label>
+          <p class="quiz-explanation" hidden></p>
+        </fieldset>
+        <fieldset class="quiz-question" data-answer="a" data-explanation="COPPA and its implementing rule apply requirements to covered websites and online services collecting personal information from children under 13; specific requirements and exceptions depend on the situation.">
+          <legend>3. Which statement about COPPA is most accurate?</legend>
+          <label class="answer"><input type="radio" name="q3" value="a"> It is a U.S. law with requirements for covered services collecting children's personal information</label>
+          <label class="answer"><input type="radio" name="q3" value="b"> It applies identically to every website and every user worldwide</label>
+          <label class="answer"><input type="radio" name="q3" value="c"> It is a rule that requires all apps to collect location</label>
+          <label class="answer"><input type="radio" name="q3" value="d"> It only applies to games made for adults</label>
+          <p class="quiz-explanation" hidden></p>
+        </fieldset>
+        <fieldset class="quiz-question" data-answer="d" data-explanation="Ethical design respects users, communicates honestly, considers fairness, and avoids collecting data without a good reason.">
+          <legend>4. Which is an example of ethical technology design?</legend>
+          <label class="answer"><input type="radio" name="q4" value="a"> Making important data practices hard to find</label>
+          <label class="answer"><input type="radio" name="q4" value="b"> Collecting extra information just in case it is useful later</label>
+          <label class="answer"><input type="radio" name="q4" value="c"> Hiding how personal information is used</label>
+          <label class="answer"><input type="radio" name="q4" value="d"> Explaining data use clearly and collecting only what is needed</label>
+          <p class="quiz-explanation" hidden></p>
+        </fieldset>
+        <fieldset class="quiz-question" data-answer="b" data-explanation="Laws set legal requirements, while ethics also asks what is fair, respectful, and responsible. Meeting the law may not answer every ethical question.">
+          <legend>5. How are laws and ethical responsibilities different?</legend>
+          <label class="answer"><input type="radio" name="q5" value="a"> Ethics and law always mean exactly the same thing</label>
+          <label class="answer"><input type="radio" name="q5" value="b"> Laws set legal requirements; ethics also considers what is responsible and fair</label>
+          <label class="answer"><input type="radio" name="q5" value="c"> Ethical choices only matter when no law exists</label>
+          <label class="answer"><input type="radio" name="q5" value="d"> Following a law guarantees every design choice is ethical</label>
+          <p class="quiz-explanation" hidden></p>
+        </fieldset>
+        <div class="button-row">
+          <button type="submit">Check My Score</button>
+          <button class="secondary" type="reset">Reset quiz</button>
+        </div>
+        <p id="quiz-result" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="sources" aria-labelledby="sources-title">
+      <p class="eyebrow">05 · Learn more</p>
+      <h2 id="sources-title">Sources &amp; further reading</h2>
+      <p class="section-intro">COPPA jurisdiction: United States. The FTC is a U.S. government agency. These official resources provide further information; this student-friendly overview is not legal advice.</p>
+      <div class="card">
+        <ul class="source-list">
+          <li>Federal Trade Commission — <a href="https://www.ftc.gov/legal-library/browse/statutes/childrens-online-privacy-protection-act" target="_blank" rel="noopener noreferrer">Children's Online Privacy Protection Act</a></li>
+          <li>Federal Trade Commission — <a href="https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa" target="_blank" rel="noopener noreferrer">Children's Online Privacy Protection Rule (COPPA)</a></li>
+          <li>Federal Trade Commission — <a href="https://consumer.ftc.gov/articles/protecting-your-childs-privacy-online" target="_blank" rel="noopener noreferrer">Protecting Your Child's Privacy Online</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Privacy Quest · Make thoughtful choices. Design with care.</p>
+  </footer>
+
+  <script>
+    // Scenario feedback explains the trade-offs behind each choice.
+    const privacyFeedback = {
+      best: {
+        message: "Good choice. Check whether background access is needed, read the explanation, and choose a narrower option such as location access only while using the app if that meets your needs.",
+        type: "good"
+      },
+      problem: {
+        message: "This approach is too broad. Automatically allowing access can share more than needed, while deleting every app that asks for permission is not always necessary. Review the reason and choose the least access that works for you."
+      },
+      collect: {
+        message: "Disadvantage: collecting extra location data can invade privacy, increase security risks, and weaken user trust. It may help advertising, but that benefit does not justify gathering information the navigation feature does not need."
+      },
+      minimize: {
+        message: "Ethical advantage: data minimization and clear explanations respect privacy, support informed choices, and build trust. A trade-off is that the developer may have less data for targeted ads—but that is not a good reason to collect unnecessary location data."
+      },
+      hide: {
+        message: "Disadvantage: confusing settings make informed consent harder, reduce transparency, and can damage trust. Hiding details may benefit the developer in the short term, but users lose meaningful control."
+      }
+    };
+
+    function showScenarioFeedback(button, output) {
+      const feedback = privacyFeedback[button.dataset.feedback];
+      output.textContent = feedback.message;
+      output.classList.toggle("problem", feedback.type !== "good" && button.dataset.feedback === "problem");
+    }
+
+    const privacyScenarioButtons = document.querySelectorAll("#privacy .choice");
+    const ethicsScenarioButtons = document.querySelectorAll("#ethics .choice");
+
+    privacyScenarioButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        showScenarioFeedback(button, document.getElementById("privacy-feedback"));
+      });
+    });
+
+    ethicsScenarioButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        showScenarioFeedback(button, document.getElementById("ethics-feedback"));
+      });
+    });
+
+    // Score the selected answers and show an explanation for every question.
+    const quizForm = document.getElementById("quiz-form");
+    const quizQuestions = document.querySelectorAll(".quiz-question");
+    const quizResult = document.getElementById("quiz-result");
+
+    quizForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      let score = 0;
+      let unanswered = 0;
+
+      quizQuestions.forEach(function (question) {
+        const selectedAnswer = question.querySelector("input:checked");
+        const explanation = question.querySelector(".quiz-explanation");
+        const isCorrect = selectedAnswer && selectedAnswer.value === question.dataset.answer;
+
+        if (!selectedAnswer) {
+          unanswered += 1;
+        }
+        if (isCorrect) {
+          score += 1;
+        }
+
+        explanation.textContent = (isCorrect ? "Correct! " : "Review: ") + question.dataset.explanation;
+        explanation.hidden = false;
+      });
+
+      quizResult.textContent = "Your score: " + score + " out of " + quizQuestions.length +
+        (unanswered ? " · Answer all questions and check again to complete the quiz." : " · Nice work!");
+    });
+
+    quizForm.addEventListener("reset", function () {
+      window.setTimeout(function () {
+        quizQuestions.forEach(function (question) {
+          const explanation = question.querySelector(".quiz-explanation");
+          explanation.textContent = "";
+          explanation.hidden = true;
+        });
+        quizResult.textContent = "";
+      }, 0);
+    });
+  </script>
+</body>
+</html>

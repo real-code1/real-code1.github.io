@@ -2,6 +2,7 @@
 ## Projects
 - Project 1: [BitLab: Binary Explorer](java-projects/Newproject/BitLab/) — An interactive game for learning about binary, ASCII, and how computers store data.
 - Project 2: [FirstArray](java-projects/Project2/FirstArray.java) — A Java program demonstrating array indexing.
+- Project 3: [Privacy Quest](java-projects/Project3/) — A digital ethics and privacy awareness project exploring safety, law, and responsible technology choices.
 ## About Me
 Click here to learn more → [About Me](about.md)
 
